@@ -1,7 +1,21 @@
 #!/bin/sh
 
+BP_DIR=$(cd $(dirname $0); cd ..; pwd)
 BUILD_DIR=$1
 CACHE_DIR=$2
+ENV_DIR=$3
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo 'Running `bin/envvars` inside the buildpack environment' | indent
+source $BUILD_DIR/bin/envvars
+
+# give environment to later buildpacks
+touch "$BP_DIR/export"
+export | grep -E -e ' (PATH|LD_PRELOAD|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH)='  >> "$BP_DIR/export"
+
 
 IMAGE_MAGICK_VERSION="7.0.8-11"
 LIBWEBP_VERSION="1.0.0"
@@ -22,8 +36,7 @@ IM_PROVISIONING_HOST="$PROVISIONING_HOST"
 mkdir -p $CACHE_DIR
 mkdir -p $VENDOR_DIR
 
-# if [ ! -f $CACHE_FILE ]; then
-if true; then
+if [ ! FLUSH_IM_WEBP_CACHE -a ! -f $CACHE_FILE ]; then
 
   cd $BUILD_DIR
 
