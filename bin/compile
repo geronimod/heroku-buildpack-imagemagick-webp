@@ -12,6 +12,9 @@ indent() {
 echo 'Running `bin/envvars` inside the buildpack environment' | indent
 source $BUILD_DIR/bin/envvars
 
+# show loaded env
+env
+
 # give environment to later buildpacks
 touch "$BP_DIR/export"
 export | grep -E -e ' (PATH|LD_PRELOAD|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH)='  >> "$BP_DIR/export"
@@ -36,7 +39,7 @@ IM_PROVISIONING_HOST="$PROVISIONING_HOST"
 mkdir -p $CACHE_DIR
 mkdir -p $VENDOR_DIR
 
-if [ ! FLUSH_IM_WEBP_CACHE -a ! -f $CACHE_FILE ]; then
+if [ $FLUSH_IM_WEBP_CACHE -o ! -f $CACHE_FILE ]; then
 
   cd $BUILD_DIR
 
@@ -96,7 +99,7 @@ if [ ! FLUSH_IM_WEBP_CACHE -a ! -f $CACHE_FILE ]; then
 else
 
   # cache exists, extract it
-  echo "-----> Extracting ImageMagick and libwebp $CACHE_FILE => $VENDOR_DIR"
+  echo "-----> CACHE FOUND: Extracting ImageMagick and libwebp $CACHE_FILE => $VENDOR_DIR"
   tar xzf $CACHE_FILE -C $VENDOR_DIR
 fi
 
