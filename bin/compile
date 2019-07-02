@@ -4,16 +4,18 @@ BP_DIR=$(cd $(dirname $0); cd ..; pwd)
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
+ENV_VARS="$BUILD_DIR/bin/envvars"
 
 indent() {
   sed -u 's/^/       /'
 }
 
-echo 'Running `bin/envvars` inside the buildpack environment' | indent
-source $BUILD_DIR/bin/envvars
-
-# show loaded env
-env
+if [ -f $ENV_VARS ]; then
+  echo 'Running `bin/envvars` inside the buildpack environment' | indent
+  source $ENV_VARS
+  # show loaded env
+  env
+fi
 
 # give environment to later buildpacks
 touch "$BP_DIR/export"
