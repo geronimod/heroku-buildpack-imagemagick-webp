@@ -41,7 +41,7 @@ IM_PROVISIONING_HOST="$PROVISIONING_HOST"
 mkdir -p $CACHE_DIR
 mkdir -p $VENDOR_DIR
 
-if [ $FLUSH_IM_WEBP_CACHE -o ! -f $CACHE_FILE ]; then
+if [ $FLUSH_IM_WEBP_CACHE = 1 -o ! -f $CACHE_FILE ]; then
 
   cd $BUILD_DIR
 
